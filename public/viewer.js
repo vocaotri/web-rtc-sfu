@@ -5,34 +5,9 @@ window.onload = () => {
         init();
     }
 }
-getCamera();
 async function init() {
     const peer = createPeer();
     peer.addTransceiver("video", { direction: "recvonly" })
-}
-async function getCamera(device = true) {
-    let width = { ideal: 854 };
-    let height = { ideal: 480 };
-    console.log({
-        video: typeof device === "boolean" ? device : { ...device, width: width, height: height },
-        audio: true
-    })
-    return navigator.mediaDevices.getUserMedia({
-        video: typeof device === "boolean" ? device : { ...device, width: width, height: height },
-        audio: true
-    });
-}
-async function getConnectedDevices(kind = 'videoinput') {
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    return devices.filter(device => device.kind === kind);
-}
-
-async function getDeviceIdCamera(key = 0) {
-    let listCamera = await getConnectedDevices();
-    await listCamera.forEach((item) => {
-        if (item.deviceId != null && item.deviceId != '')
-            cameraDeviceId.push({ diviceId: item.deviceId, label: item.label });
-    });
 }
 
 function createPeer() {
