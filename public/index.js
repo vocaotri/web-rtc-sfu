@@ -10,7 +10,7 @@ getCamera();
 async function init() {
     await getDeviceIdCamera();
     console.log(cameraDeviceId);
-    const stream = await getCamera({ deviceId: { exact: urlParams.get('room_id') == "1" ? "819e905600df1db315e25002d1c14852a3c4e126e901a657efe1a58b1af9716a" : "38b451a4041bf276100bcf5f61a686a1870f3959ed7ece6c43b022a09433c8c3" } });
+    const stream = await getCamera({ deviceId: { exact: urlParams.get('room_id') == "1" ? cameraDeviceId[0].diviceId : cameraDeviceId[1].diviceId } });
     console.log(stream)
     document.getElementById("video").srcObject = stream;
     const peer = createPeer();
