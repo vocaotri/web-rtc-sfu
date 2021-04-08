@@ -24,7 +24,7 @@ app.post("/consumer/:roomID", async (req, res) => {
         const desc = new webrtc.RTCSessionDescription(req.body.sdp);
         await peer.setRemoteDescription(desc);
         senderStream[roomID].getTracks().forEach(track => peer.addTrack(track, senderStream[roomID]));
-        console.log(senderStream);
+        console.log(senderStream[roomID]);
         const answer = await peer.createAnswer();
         await peer.setLocalDescription(answer);
         const payload = {
