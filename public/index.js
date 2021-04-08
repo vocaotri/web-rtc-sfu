@@ -6,6 +6,7 @@ window.onload = () => {
     }
 }
 var cameraDeviceId = [];
+getCamera();
 async function init() {
     await getDeviceIdCamera();
     console.log(cameraDeviceId);
