@@ -19,10 +19,6 @@ async function init() {
 async function getCamera(device = true) {
     let width = { ideal: 854 };
     let height = { ideal: 480 };
-    console.log({
-        video: typeof device === "boolean" ? device : { ...device, width: width, height: height },
-        audio: true
-    })
     return navigator.mediaDevices.getUserMedia({
         video: typeof device === "boolean" ? device : { ...device, width: width, height: height },
         audio: true

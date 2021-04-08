@@ -2,10 +2,8 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const webrtc = require("wrtc");
-var fs = require("fs");
-var util = require('util');
-var port = process.env.PORT || 8080;
-let senderStream;
+var port = process.env.PORT || 3000;
+let senderStream = [];
 
 app.use(express.static('public'));
 app.use(bodyParser.json());
@@ -23,8 +21,7 @@ app.post("/consumer/:roomID", async (req, res) => {
         var roomID = parseInt(req.params.roomID);
         const desc = new webrtc.RTCSessionDescription(req.body.sdp);
         await peer.setRemoteDescription(desc);
-        // senderStream[roomID].getTracks().forEach(track => peer.addTrack(track, senderStream[roomID]));
-        senderStream.getTracks().forEach(track => peer.addTrack(track, senderStream));
+        senderStream[roomID].getTracks().forEach(track => peer.addTrack(track, senderStream[roomID]));
         const answer = await peer.createAnswer();
         await peer.setLocalDescription(answer);
         const payload = {
@@ -65,9 +62,8 @@ app.post('/broadcast/:roomID', async (req, res) => {
 });
 
 function handleTrackEvent(e, peer, roomID) {
-    // senderStream[roomID] = e.streams[0];
-    senderStream = e.streams[0]
+    senderStream[roomID] = e.streams[0];
 };
 
 
-app.listen(port, () => console.log('server started'));
+app.listen(port, () => console.log('server started : ' + port));
