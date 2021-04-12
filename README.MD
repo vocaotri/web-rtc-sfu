@@ -2,10 +2,10 @@ to run the app
 
 `npm i or yarn`
 
-then 
+then
 
 `node server.js`
 
-For broadcaster screen: http://localhost:5000/
+For broadcaster screen: http://localhost:3000/?room_id=1
 
-For viewer screen: http://localhost:5000/viewer.html
+For viewer screen: http://localhost:3000/viewer.html?room_id=1
