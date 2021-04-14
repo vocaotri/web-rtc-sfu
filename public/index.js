@@ -6,19 +6,16 @@ window.onload = () => {
     }
 }
 var cameraDeviceId = [];
-getCamera();
 async function init() {
     await getDeviceIdCamera();
-    console.log(cameraDeviceId);
     const stream = await getCamera({ deviceId: { exact: urlParams.get('room_id') == "1" ? cameraDeviceId[0].diviceId : cameraDeviceId[1].diviceId } });
-    console.log(stream)
     document.getElementById("video").srcObject = stream;
     const peer = createPeer();
     stream.getTracks().forEach(track => peer.addTrack(track, stream));
 }
 async function getCamera(device = true) {
-    let width = { ideal: 854 };
-    let height = { ideal: 480 };
+    let width = { ideal: 1920 };
+    let height = { ideal: 1080 };
     return navigator.mediaDevices.getUserMedia({
         video: typeof device === "boolean" ? device : { ...device, width: width, height: height },
         audio: true
