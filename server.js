@@ -10,7 +10,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post("/consumer/:roomID", async (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
+    res.header("Access-Control-Allow-Origin", "http://localhost:8000");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,x-socket-id,x-csrf-token");
     if (req.params) {
         const peer = new webrtc.RTCPeerConnection({
             iceServers: [
@@ -37,7 +38,8 @@ app.post("/consumer/:roomID", async (req, res) => {
 });
 
 app.post('/broadcast/:roomID', async (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
+    res.header("Access-Control-Allow-Origin", "http://localhost:8000");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,x-socket-id,x-csrf-token");
     if (req.params) {
         const peer = new webrtc.RTCPeerConnection({
             iceServers: [
