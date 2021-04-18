@@ -34,8 +34,7 @@ async function handleNegotiationNeededEvent(peer) {
   };
 
   const { data } = await axios.post(
-    // "/consumer/" + urlParams.get("room_id")
-    "https://webrct-sfu-demo.herokuapp.com/consumer/1",
+    "/consumer/" + urlParams.get("room_id"),
     payload
   );
   const desc = new RTCSessionDescription(data.sdp);
