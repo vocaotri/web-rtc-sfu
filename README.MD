@@ -1,6 +1,7 @@
 to run the app
 
 `npm i or yarn`
+
 `cp .env.example .env`
 
 then
