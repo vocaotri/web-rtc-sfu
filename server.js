@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const webrtc = require("wrtc");
 fs = require("fs");
+require("dotenv").config();
 var port = process.env.PORT || 3000;
 let senderStream = [];
 let peerUser = [];
@@ -52,7 +53,7 @@ app.post("/consumer/:roomID/:userID", async (req, res) => {
     peerUser[userID] = new webrtc.RTCPeerConnection({
       iceServers: [
         {
-          urls: "stun:stun.viva.gr",
+          urls: process.env.STUN_URL,
         },
       ],
     });
@@ -103,7 +104,7 @@ app.post("/broadcast/:roomID", async (req, res) => {
     const peer = new webrtc.RTCPeerConnection({
       iceServers: [
         {
-          urls: "stun:stun.viva.gr",
+          urls: process.env.STUN_URL,
         },
       ],
     });
