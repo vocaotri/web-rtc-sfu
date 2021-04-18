@@ -69,6 +69,21 @@ app.post("/consumer/:roomID", async (req, res) => {
     res.json({ error: "no room id" });
   }
 });
+app.post("/disconnect/:RoomID", async (req, res) => {
+  var roomID = parseInt(req.params.roomID);
+  const peer = new webrtc.RTCPeerConnection({
+    iceServers: [
+      {
+        urls: "stun:stun.stunprotocol.org",
+      },
+    ],
+  });
+  const desc = new webrtc.RTCSessionDescription(req.body.sdp);
+  await peer.setRemoteDescription(desc);
+  senderStream[roomID]
+    .getTracks()
+    .forEach((track) => peer.removeTrack(track, senderStream[roomID]));
+});
 
 app.post("/broadcast/:roomID", async (req, res) => {
   if (req.params) {
