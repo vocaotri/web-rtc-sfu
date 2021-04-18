@@ -16,7 +16,13 @@
         const payload = {
           sdp: dataS.sdp,
         };
-        axios.post("/disconnect/" + urlParams.get("room_id"), payload);
+        axios.post(
+          "/disconnect/" +
+            urlParams.get("room_id") +
+            "/" +
+            urlParams.get("user_id"),
+          payload
+        );
       };
     </script>
   </body>

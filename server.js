@@ -4,6 +4,7 @@ const webrtc = require("wrtc");
 fs = require("fs");
 var port = process.env.PORT || 3000;
 let senderStream = [];
+let peerUser = [];
 
 app.use(express.static("public"));
 app.use(express.json());
@@ -44,10 +45,11 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.post("/consumer/:roomID", async (req, res) => {
+app.post("/consumer/:roomID/:userID", async (req, res) => {
   var roomID = parseInt(req.params.roomID);
+  var userID = parseInt(req.params.userID);
   if (req.params && typeof senderStream[roomID] !== "undefined") {
-    const peer = new webrtc.RTCPeerConnection({
+    peerUser[userID] = new webrtc.RTCPeerConnection({
       iceServers: [
         {
           urls: "stun:stun.viva.gr",
@@ -55,32 +57,32 @@ app.post("/consumer/:roomID", async (req, res) => {
       ],
     });
     const desc = new webrtc.RTCSessionDescription(req.body.sdp);
-    await peer.setRemoteDescription(desc);
+    await peerUser[userID].setRemoteDescription(desc);
     senderStream[roomID]
       .getTracks()
-      .forEach((track) => peer.addTrack(track, senderStream[roomID]));
-    const answer = await peer.createAnswer();
-    await peer.setLocalDescription(answer);
+      .forEach((track) =>
+        peerUser[userID].addTrack(track, senderStream[roomID])
+      );
+    const answer = await peerUser[userID].createAnswer();
+    await peerUser[userID].setLocalDescription(answer);
     const payload = {
-      sdp: peer.localDescription,
+      sdp: peerUser[userID].localDescription,
     };
     res.json(payload);
   } else {
     res.json({ error: "no room id" });
   }
 });
-app.post("/disconnect/:RoomID", async (req, res) => {
+app.post("/disconnect/:RoomID/:userID", async (req, res) => {
   var roomID = parseInt(req.params.roomID);
-  const peer = new webrtc.RTCPeerConnection({
-    iceServers: [
-      {
-        urls: "stun:stun.viva.gr",
-      },
-    ],
-  });
-  senderStream[roomID]
-    .getTracks()
-    .forEach((track) => peer.removeTrack(track, senderStream[roomID]));
+  var userID = parseInt(req.params.userID);
+  if (req.params && typeof senderStream[roomID] !== "undefined") {
+    senderStream[roomID]
+      .getTracks()
+      .forEach((track) =>
+        peerUser[userID].removeTrack(track, senderStream[roomID])
+      );
+  }
 });
 
 app.post("/broadcast/:roomID", async (req, res) => {
