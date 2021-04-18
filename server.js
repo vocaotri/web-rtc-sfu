@@ -50,7 +50,7 @@ app.post("/consumer/:roomID", async (req, res) => {
     const peer = new webrtc.RTCPeerConnection({
       iceServers: [
         {
-          urls: "stun:stun.stunprotocol.org",
+          urls: "stun:stun.viva.gr",
         },
       ],
     });
@@ -74,12 +74,10 @@ app.post("/disconnect/:RoomID", async (req, res) => {
   const peer = new webrtc.RTCPeerConnection({
     iceServers: [
       {
-        urls: "stun:stun.stunprotocol.org",
+        urls: "stun:stun.viva.gr",
       },
     ],
   });
-  const desc = new webrtc.RTCSessionDescription(req.body.sdp);
-  await peer.setRemoteDescription(desc);
   senderStream[roomID]
     .getTracks()
     .forEach((track) => peer.removeTrack(track, senderStream[roomID]));
@@ -90,7 +88,7 @@ app.post("/broadcast/:roomID", async (req, res) => {
     const peer = new webrtc.RTCPeerConnection({
       iceServers: [
         {
-          urls: "stun:stun.stunprotocol.org",
+          urls: "stun:stun.viva.gr",
         },
       ],
     });

@@ -16,7 +16,7 @@ function createPeer() {
   const peer = new RTCPeerConnection({
     iceServers: [
       {
-        urls: "stun:stun.stunprotocol.org",
+        urls: "stun:stun.viva.gr",
       },
     ],
   });
@@ -37,10 +37,10 @@ async function handleNegotiationNeededEvent(peer) {
     "/consumer/" + urlParams.get("room_id"),
     payload
   );
+  window.dataS = data;
   const desc = new RTCSessionDescription(data.sdp);
   peer.setRemoteDescription(desc).catch((e) => console.log(e));
 }
-
 function handleTrackEvent(e) {
   document.getElementById("video").srcObject = e.streams[0];
 }
