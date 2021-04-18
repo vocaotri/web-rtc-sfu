@@ -82,6 +82,7 @@ app.post("/disconnect/:RoomID/:userID", async (req, res) => {
       .forEach((track) =>
         peerUser[userID].removeTrack(track, senderStream[roomID])
       );
+    delete peerUser[userID];
   }
 });
 
