@@ -12,11 +12,11 @@
     <video autoplay id="video" width="1280" height="720"></video>
     <button id="my-button">View Stream</button>
     <script>
-      window.onbeforeunload = function () {
+      window.onbeforeunload = async function () {
         const payload = {
           sdp: dataS.sdp,
         };
-        axios.post(
+        await axios.post(
           "/disconnect/" +
             urlParams.get("room_id") +
             "/" +

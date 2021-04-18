@@ -73,16 +73,28 @@ app.post("/consumer/:roomID/:userID", async (req, res) => {
     res.json({ error: "no room id" });
   }
 });
-app.post("/disconnect/:RoomID/:userID", async (req, res) => {
+app.post("/disconnect/:roomID/:userID", async (req, res) => {
   var roomID = parseInt(req.params.roomID);
   var userID = parseInt(req.params.userID);
-  if (req.params && typeof senderStream[roomID] !== "undefined") {
+  if (
+    req.params &&
+    typeof senderStream[roomID] !== "undefined" &&
+    userID !== 0
+  ) {
     senderStream[roomID]
       .getTracks()
       .forEach((track) =>
         peerUser[userID].removeTrack(track, senderStream[roomID])
       );
     delete peerUser[userID];
+  } else if (req.params && typeof senderStream[roomID] && userID == 0) {
+    delete senderStream[roomID];
+    senderStream = senderStream.filter((val) => {
+      return val !== undefined;
+    });
+    if (senderStream.length === 0) {
+      restartServer();
+    }
   }
 });
 
@@ -112,6 +124,20 @@ app.post("/broadcast/:roomID", async (req, res) => {
 
 function handleTrackEvent(e, peer, roomID) {
   senderStream[roomID] = e.streams[0];
+}
+
+function restartServer() {
+  setTimeout(function () {
+    // When NodeJS exits
+    process.on("exit", function () {
+      require("child_process").spawn(process.argv.shift(), process.argv, {
+        cwd: process.cwd(),
+        detached: true,
+        stdio: "inherit",
+      });
+    });
+    process.exit();
+  }, 1000);
 }
 
 app.listen(port, () => console.log("server started : " + port));
