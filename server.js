@@ -1,14 +1,13 @@
 const express = require("express");
 const app = express();
-const bodyParser = require("body-parser");
 const webrtc = require("wrtc");
 fs = require("fs");
 var port = process.env.PORT || 3000;
 let senderStream = [];
 
 app.use(express.static("public"));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(function (req, res, next) {
   const allowedOrigins = [
@@ -63,7 +62,6 @@ app.post("/consumer/:roomID", async (req, res) => {
     const payload = {
       sdp: peer.localDescription,
     };
-
     res.json(payload);
   } else {
     res.json({ error: "no room id" });
@@ -88,7 +86,6 @@ app.post("/broadcast/:roomID", async (req, res) => {
     const payload = {
       sdp: peer.localDescription,
     };
-
     res.json(payload);
   } else {
     res.json({ error: "no room id" });
