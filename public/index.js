@@ -92,7 +92,7 @@ async function getDeviceIdCamera(key = 0) {
 
 function createPeer() {
   const peer = new RTCPeerConnection({
-    iceServers: [{ urls: "stun:stun.viva.gr" }],
+    iceServers: [{ urls: "stun:stun.l.google.com" }],
   });
   peer.onnegotiationneeded = () => handleNegotiationNeededEvent(peer);
 

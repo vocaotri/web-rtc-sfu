@@ -16,7 +16,7 @@ function createPeer() {
   const peer = new RTCPeerConnection({
     iceServers: [
       {
-        urls: "stun:stun.viva.gr",
+        urls: "stun:stun.l.google.com",
       },
     ],
   });

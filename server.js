@@ -82,11 +82,7 @@ app.post("/disconnect/:roomID/:userID", async (req, res) => {
     typeof senderStream[roomID] !== "undefined" &&
     userID !== 0
   ) {
-    senderStream[roomID]
-      .getTracks()
-      .forEach((track) =>
-        peerUser[userID].removeTrack(track, senderStream[roomID])
-      );
+    peerUser[userID].close();
     delete peerUser[userID];
   } else if (req.params && typeof senderStream[roomID] && userID == 0) {
     delete senderStream[roomID];
