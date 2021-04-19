@@ -89,7 +89,7 @@ app.post("/disconnect/:roomID/:userID", async (req, res) => {
     senderStream = senderStream.filter((val) => {
       return val !== undefined;
     });
-    if (senderStream.length === 0) {
+    if (senderStream.length === 0 && port === 3000) {
       restartServer();
     }
   }
