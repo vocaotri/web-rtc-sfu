@@ -80,11 +80,11 @@ app.post("/disconnect/:roomID/:userID", async (req, res) => {
   if (
     req.params &&
     typeof senderStream[roomID] !== "undefined" &&
-    userID !== 0
+    userID !== 0 && peerUser[userID]
   ) {
     peerUser[userID].close();
     delete peerUser[userID];
-  } else if (req.params && typeof senderStream[roomID] && userID == 0) {
+  } else if (req.params && typeof senderStream[roomID] && userID == 0 && peerUser[userID]) {
     delete senderStream[roomID];
     senderStream = senderStream.filter((val) => {
       return val !== undefined;
