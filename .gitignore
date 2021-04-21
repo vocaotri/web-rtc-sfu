@@ -106,7 +106,6 @@ dist
 .tern-port
 
 # Stores VSCode versions used for testing VSCode extensions
-.vscode-test
 
 # yarn v2
 .yarn/cache
@@ -114,3 +113,6 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
