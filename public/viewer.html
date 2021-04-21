@@ -13,15 +13,11 @@
     <button id="my-button">View Stream</button>
     <script>
       window.onbeforeunload = async function () {
-        const payload = {
-          sdp: dataS.sdp,
-        };
         await axios.post(
           "/disconnect/" +
             urlParams.get("room_id") +
             "/" +
-            urlParams.get("user_id"),
-          payload
+            urlParams.get("user_id")
         );
       };
     </script>

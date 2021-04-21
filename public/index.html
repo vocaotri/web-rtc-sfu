@@ -12,10 +12,11 @@
     <video autoplay id="video" width="1280" height="720" muted></video>
     <script>
       window.onbeforeunload = async function () {
-        const payload = {};
         await axios.post(
-          "/disconnect/" + urlParams.get("room_id") + "/0",
-          payload
+          "/disconnect/" +
+            urlParams.get("room_id") +
+            "/" +
+            urlParams.get("user_id")
         );
         // return "Leaving this page will reset the wizard";
         return false;

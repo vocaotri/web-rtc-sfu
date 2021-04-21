@@ -1,11 +1,11 @@
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-// init();
-window.onload = () => {
-  document.getElementById("my-button").onclick = () => {
-    init();
-  };
-};
+init();
+// window.onload = () => {
+//   document.getElementById("my-button").onclick = () => {
+//     init();
+//   };
+// };
 async function init() {
   const peer = createPeer();
   peer.addTransceiver("audio", { direction: "recvonly" });
@@ -37,7 +37,6 @@ async function handleNegotiationNeededEvent(peer) {
     "/consumer/" + urlParams.get("room_id") + "/" + urlParams.get("user_id"),
     payload
   );
-  window.dataS = data;
   const desc = new RTCSessionDescription(data.sdp);
   peer.setRemoteDescription(desc).catch((e) => console.log(e));
 }

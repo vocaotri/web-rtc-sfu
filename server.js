@@ -47,94 +47,76 @@ app.use(function (req, res, next) {
 });
 
 app.post("/consumer/:roomID/:userID", async (req, res) => {
+  if (req.params.roomID === "null")
+    return res.status(401).json({ error: "no room id" });
+  if (req.params.userID === "null")
+    return res.status(401).json({ error: "no user id" });
   var roomID = parseInt(req.params.roomID);
   var userID = parseInt(req.params.userID);
-  if (req.params && typeof senderStream[roomID] !== "undefined") {
-    peerUser[userID] = new webrtc.RTCPeerConnection({
-      iceServers: [
-        {
-          urls: process.env.STUN_URL,
-        },
-      ],
-    });
-    const desc = new webrtc.RTCSessionDescription(req.body.sdp);
-    await peerUser[userID].setRemoteDescription(desc);
-    senderStream[roomID]
-      .getTracks()
-      .forEach((track) =>
-        peerUser[userID].addTrack(track, senderStream[roomID])
-      );
-    const answer = await peerUser[userID].createAnswer();
-    await peerUser[userID].setLocalDescription(answer);
-    const payload = {
-      sdp: peerUser[userID].localDescription,
-    };
-    res.json(payload);
-  } else {
-    res.json({ error: "no room id" });
-  }
+  if (typeof senderStream[roomID] === "undefined")
+    return res.status(401).json({ error: "sender not found" });
+  peerUser[userID] = new webrtc.RTCPeerConnection({
+    iceServers: [
+      {
+        urls: process.env.STUN_URL,
+      },
+    ],
+  });
+  const desc = new webrtc.RTCSessionDescription(req.body.sdp);
+  await peerUser[userID].setRemoteDescription(desc);
+  senderStream[roomID]
+    .getTracks()
+    .forEach((track) => peerUser[userID].addTrack(track, senderStream[roomID]));
+  const answer = await peerUser[userID].createAnswer();
+  await peerUser[userID].setLocalDescription(answer);
+  const payload = {
+    sdp: peerUser[userID].localDescription,
+  };
+  res.json(payload);
 });
 app.post("/disconnect/:roomID/:userID", async (req, res) => {
+  if (req.params.roomID === "null")
+    return res.status(401).json({ error: "no room id" });
+  if (req.params.userID === "null")
+    return res.status(401).json({ error: "no user id" });
   var roomID = parseInt(req.params.roomID);
   var userID = parseInt(req.params.userID);
-  if (
-    req.params &&
-    typeof senderStream[roomID] !== "undefined" &&
-    userID !== 0
-  ) {
-    peerUser[userID].close();
-    delete peerUser[userID];
-  } else if (req.params && typeof senderStream[roomID] && userID == 0) {
-    delete senderStream[roomID];
-    senderStream = senderStream.filter((val) => {
-      return val !== undefined;
-    });
-    if (senderStream.length === 0 && port === 3000) {
-      restartServer();
-    }
-  }
+  if (typeof peerUser[userID] === "undefined")
+    return res.status(401).json({ error: "peer not found" });
+  peerUser[userID].close();
+  delete peerUser[userID];
+  return res.json({ success: "clear peer succees" });
 });
 
-app.post("/broadcast/:roomID", async (req, res) => {
-  if (req.params) {
-    const peer = new webrtc.RTCPeerConnection({
-      iceServers: [
-        {
-          urls: process.env.STUN_URL,
-        },
-      ],
-    });
-    var roomID = parseInt(req.params.roomID);
-    peer.ontrack = (e) => handleTrackEvent(e, peer, roomID);
-    const desc = new webrtc.RTCSessionDescription(req.body.sdp);
-    await peer.setRemoteDescription(desc);
-    const answer = await peer.createAnswer();
-    await peer.setLocalDescription(answer);
-    const payload = {
-      sdp: peer.localDescription,
-    };
-    res.json(payload);
-  } else {
-    res.json({ error: "no room id" });
-  }
+app.post("/broadcast/:roomID/:userID", async (req, res) => {
+  if (req.params.roomID === "null")
+    return res.status(401).json({ error: "no room id" });
+  if (req.params.userID === "null")
+    return res.status(401).json({ error: "no user id" });
+  if (peerUser[userID]) return res.json({ error: "user already exist" });
+  var roomID = parseInt(req.params.roomID);
+  var userID = parseInt(req.params.userID);
+  peerUser[userID] = new webrtc.RTCPeerConnection({
+    iceServers: [
+      {
+        urls: process.env.STUN_URL,
+      },
+    ],
+  });
+  peerUser[userID].ontrack = (e) =>
+    handleTrackEvent(e, peerUser[userID], roomID);
+  const desc = new webrtc.RTCSessionDescription(req.body.sdp);
+  await peerUser[userID].setRemoteDescription(desc);
+  const answer = await peerUser[userID].createAnswer();
+  await peerUser[userID].setLocalDescription(answer);
+  const payload = {
+    sdp: peerUser[userID].localDescription,
+  };
+  return res.json(payload);
 });
 
 function handleTrackEvent(e, peer, roomID) {
   senderStream[roomID] = e.streams[0];
-}
-
-function restartServer() {
-  setTimeout(function () {
-    // When NodeJS exits
-    process.on("exit", function () {
-      require("child_process").spawn(process.argv.shift(), process.argv, {
-        cwd: process.cwd(),
-        detached: true,
-        stdio: "inherit",
-      });
-    });
-    process.exit();
-  }, 1000);
 }
 
 app.listen(port, () => console.log("server started : " + port));

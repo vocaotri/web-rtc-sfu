@@ -107,7 +107,7 @@ async function handleNegotiationNeededEvent(peer) {
   };
 
   const { data } = await axios.post(
-    "/broadcast/" + urlParams.get("room_id"),
+    "/broadcast/" + urlParams.get("room_id") + "/" + urlParams.get("user_id"),
     payload
   );
   const desc = new RTCSessionDescription(data.sdp);
