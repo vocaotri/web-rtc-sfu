@@ -55,6 +55,7 @@ app.post("/consumer/:roomID/:userID", async (req, res) => {
   var userID = parseInt(req.params.userID);
   if (typeof senderStream[roomID] === "undefined")
     return res.status(401).json({ error: "sender not found" });
+  if (peerUser[userID]) await peerUser[userID].close();
   peerUser[userID] = new webrtc.RTCPeerConnection({
     iceServers: [
       {
