@@ -1,11 +1,11 @@
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 init();
-// window.onload = () => {
-//   document.getElementById("my-button").onclick = () => {
-//     init();
-//   };
-// };
+window.onload = () => {
+  document.getElementById("my-button").onclick = () => {
+    init();
+  };
+};
 async function init() {
   const peer = createPeer();
   peer.addTransceiver("audio", { direction: "recvonly" });
